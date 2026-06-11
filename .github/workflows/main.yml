@@ -11,7 +11,13 @@ jobs:
 
       - name: Extract ZIP File
         run: |
-          unzip -o BELAL-BOTX666-MAX-main.zip
+          if [ -f "BELAL-BOTX666-MAX-main.zip" ]; then
+            unzip -o BELAL-BOTX666-MAX-main.zip
+          elif [ -f ".github/BELAL-BOTX666-MAX-main.zip" ]; then
+            unzip -o .github/BELAL-BOTX666-MAX-main.zip
+          else
+            echo "Zip file not found!" && exit 1
+          fi
 
       - name: Commit Changes
         run: |
