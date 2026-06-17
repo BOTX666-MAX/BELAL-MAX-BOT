@@ -40,7 +40,24 @@ const COBALT_HEADERS = {
 };
 
 // getApi — apiHelper cached version
-async function getApi() { return await getBaseApi(); }
+// getApi — apiHelper cached + fallback safe (কখনো null/undefined রিটার্ন করবে না)
+const _FALLBACK_APIS = [
+  "https://kaiz-apis.gleeze.com/api",
+  "https://www.noobs-api.rf.gd/dipto",
+  "https://api-aroniix.koyeb.app",
+];
+let _cachedSafeApi = null;
+async function getApi() {
+  try {
+    const base = await getBaseApi();
+    if (base && typeof base === "string" && base.startsWith("http")) {
+      _cachedSafeApi = base;
+      return base;
+    }
+  } catch {}
+  if (_cachedSafeApi) return _cachedSafeApi;
+  return _FALLBACK_APIS[0]; // সবসময় একটা valid URL — কখনো null না
+}
 
 // Cobalt — ৩টা instance race
 async function getCobaltUrl(videoId, fmt) {
