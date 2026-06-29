@@ -12,8 +12,8 @@ module.exports.config = {
 
 module.exports.onLoad = function () {
   const paths = [
-    path.join(__dirname, "cache", "joinGif"),
-    path.join(__dirname, "cache", "randomgif")
+    path.join(process.cwd(), "tmp", "joinGif"),
+    path.join(process.cwd(), "tmp", "randomgif")
   ];
   for (const p of paths) if (!fs.existsSync(p)) fs.mkdirSync(p, { recursive: true });
 };
@@ -42,7 +42,7 @@ module.exports.run = async function ({ api, event }) {
   if (event.logMessageData.addedParticipants.some(i => i.userFbId == api.getCurrentUserID())) {
     api.changeNickname(`[ ${botPrefix} ] • ${botName}`, threadID, api.getCurrentUserID()).catch(() => {});
 
-    const gifPath  = path.join(__dirname, "cache", "randomgif");
+    const gifPath  = path.join(process.cwd(), "tmp", "randomgif");
     const files    = fs.existsSync(gifPath) ? fs.readdirSync(gifPath).filter(f => /\.(mp4|gif|jpg|png)$/i.test(f)) : [];
     const selected = files.length ? fs.createReadStream(path.join(gifPath, rand(files))) : null;
 
@@ -73,7 +73,7 @@ ${botName} এই গ্রুপের সেন্টিনেল।
   const nameArray = event.logMessageData.addedParticipants.map(i => i.fullName);
   const mentions  = event.logMessageData.addedParticipants.map(i => ({ tag: i.fullName, id: i.userFbId }));
 
-  const joinGifPath = path.join(__dirname, "cache", "joinGif");
+  const joinGifPath = path.join(process.cwd(), "tmp", "joinGif");
   const gifFiles    = fs.existsSync(joinGifPath)
     ? fs.readdirSync(joinGifPath).filter(f => /\.(mp4|gif|jpg|png)$/i.test(f))
     : [];
